@@ -1,0 +1,107 @@
+create database DDCrudAngular
+
+go
+
+use DDCrudAngular
+
+
+create table Usuario(
+IdUsuario int primary key identity,
+NombreCompleto varchar(50),
+Documento varchar(50),
+Correo varchar(50),
+FechaNacimiento date,
+)
+
+go
+
+insert into Usuario (NombreCompleto, Documento,Correo,FechaNacimiento)
+values
+('Ivan Parra','39016287','ivan.parra96@hotmail.com','07-08-2024')
+
+select * from Usuario
+
+
+create proc listaUsuario
+as
+begin
+	select
+		IdUsuario,
+		NombreCompleto,
+		Documento,
+		Correo,
+		CONVERT(char(10),FechaNacimiento,103)[FechaNacimiento]
+	from Usuario
+end
+
+go
+
+create proc obtenerUsuario(
+@IdUsuario int
+)
+as
+begin
+	select
+		IdUsuario,
+		NombreCompleto,
+		Documento,
+		Correo,
+		CONVERT(char(10),FechaNacimiento,103)[FechaNacimiento]
+	from Usuario where IdUsuario = @IdUsuario
+end
+
+go
+
+create proc crearUsuario(
+@NombreCompleto varchar(50),
+@Documento varchar(50),
+@Correo varchar(50),
+@FechaNacimiento varchar(10)
+)
+as
+begin
+	set dateformat dmy
+	insert into Usuario(
+		NombreCompleto, 
+		Documento,
+		Correo,
+		FechaNacimiento)
+	values(
+		@NombreCompleto, 
+		@Documento,
+		@Correo,
+		CONVERT(date,@FechaNacimiento)
+		)
+end
+
+go
+
+
+create proc editarUsuario(
+@IdUsuario int,
+@NombreCompleto varchar(50),
+@Documento varchar(50),
+@Correo varchar(50),
+@FechaNacimiento varchar(10)
+)
+as
+begin
+	set dateformat dmy
+	update Usuario
+		set
+		NombreCompleto =@NombreCompleto,
+		Documento = @Documento,
+		Correo= @Correo,
+		FechaNacimiento = CONVERT(date,@FechaNacimiento)
+		where IdUsuario = @IdUsuario
+end
+
+go
+
+create proc eliminarUsuario(
+@IdUsuario int
+)
+as
+begin
+	delete from Usuario where IdUsuario = @IdUsuario
+end
